@@ -1,0 +1,31 @@
+## These are are based on Private Network connections over the SoftLayer Private VPN
+## If public access is needed, substitute the following:
+## (private) <endpoint DC>.objectstorage.service.networklayer.com
+## (public)  <endpoint DC>.objectstorage.softlayer.net
+##
+## The Storage Url may be obtain via the osAuth command. Simply ignore the "| grep X-Auth-Token > ~/tokenfile"
+
+
+## Generate Auth_token (lasts for 24-hours)
+function osAuth { curl -s -i -H "X-Auth-Key: <api key>" -H "X-Auth-User: SLOS<accountID.-2:<portal username>" https://<endpoint DC>.objectstorage.service.networklayer.com/auth/v1.0/ | grep X-Auth-Token > ~/tokenfile; }
+
+## Create a container
+function osMkCont { if [ ! -f ~/tokenfile ]; then echo "Please run osAuth to generate Object Storage token."; else if [ "$1" == "" ]; then echo "Usage: osMkCont <container>"; else curl -X PUT -i -H "`cat ~/tokenfile`" https://<endpoint DC>.objectstorage.service.networklayer.com/v1/<your storage URL>/$1; fi; fi; }
+
+## Lookup information on a file
+function osQueryObj { if [ ! -f ~/tokenfile ]; then echo "Please run osAuth to generate Object Storage token."; else if [ "$1" == "" ] || [ "$2" == "" ]; then echo "Usage: osQueryObj <container> <object>"; else curl -X GET -iI -H "`cat ~/tokenfile`" https://<endpoint DC>.objectstorage.service.networklayer.com/v1/<your storage URL>/$1/$2; fi; fi; }
+
+## Lookup information on a container
+function osQueryCont { if [ ! -f ~/tokenfile ]; then echo "Please run osAuth to generate Object Storage token."; else if [ "$1" == "" ]; then echo "Usage: osQueryCont <container>"; else curl -X GET -i -H "`cat ~/tokenfile`" https://<endpoint DC>.objectstorage.service.networklayer.com/v1/<your storage URL>/$1; fi; fi; }
+
+## Lookup information on the Object Storage account
+function osQueryAcct { if [ ! -f ~/tokenfile ]; then echo "Please run osAuth to generate Object Storage token"; else curl -X GET -i -H "`cat ~/tokenfile`" https://<endpoint DC>.objectstorage.service.networklayer.com/v1/<your storage URL>; fi; }
+
+## Upload file
+function osPutObj { if [ ! -f ~/tokenfile ]; then echo "Please run osAuth to generate Object Storage token."; else if [ "$1" == "" ] || [ "$2" == "" ]; then echo "Usage: osPutObj <container> <filename>"; else curl -X PUT -i -H "`cat ~/tokenfile`" -T $2 https://<endpoint DC>.objectstorage.service.networklayer.com/v1/<your storage URL>/$1/$2; fi; fi; }
+
+## (unstable) Update information on a file
+function osUpdateObj { if [ ! -f ~/tokenfile ]; then echo "Please run osAuth to generate Object Storage token."; else if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ]; then echo "Usage: osPutObj <container> <filename> <header>"; curl -X POST -i -H "`cat ~/tokenfile`" -H "$3" https://<endpoint DC>.objectstorage.service.networklayer.com/v1/<your storage URL>/$1/$2; fi; fi; }
+
+## Obtain CDN urls (may be unstable)
+function osCdnCheck () { curl -i -H "X-Auth-Token: `~/tokenfile`" https://dal05.objectstorage.service.networklayer.com/v1/<your storage URL> -H "X-Context: cdn" -X HEAD; }
