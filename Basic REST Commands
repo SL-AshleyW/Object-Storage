@@ -3,7 +3,7 @@
 ## (private) <endpoint DC>.objectstorage.service.networklayer.com
 ## (public)  <endpoint DC>.objectstorage.softlayer.net
 ##
-## The Storage Url may be obtain via the osAuth command. Simply ignore the "| grep X-Auth-Token > ~/tokenfile"
+## The Storage Url may be obtained via the osAuth command. Simply ignore the "| grep X-Auth-Token > ~/tokenfile"
 
 
 ## Generate Auth_token (lasts for 24-hours)
