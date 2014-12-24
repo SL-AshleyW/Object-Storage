@@ -28,4 +28,4 @@ function osPutObj { if [ ! -f ~/tokenfile ]; then echo "Please run osAuth to gen
 function osUpdateObj { if [ ! -f ~/tokenfile ]; then echo "Please run osAuth to generate Object Storage token."; else if [ "$1" == "" ] || [ "$2" == "" ] || [ "$3" == "" ]; then echo "Usage: osPutObj <container> <filename> <header>"; curl -X POST -i -H "`cat ~/tokenfile`" -H "$3" https://<endpoint DC>.objectstorage.service.networklayer.com/v1/<your storage URL>/$1/$2; fi; fi; }
 
 ## Obtain CDN urls (may be unstable)
-function osCdnCheck () { curl -i -H "X-Auth-Token: `~/tokenfile`" https://dal05.objectstorage.service.networklayer.com/v1/<your storage URL> -H "X-Context: cdn" -X HEAD; }
+function osCdnCheck () { curl -i -H "X-Auth-Token: `~/tokenfile`" https://<endpoint DC>.objectstorage.service.networklayer.com/v1/<your storage URL> -H "X-Context: cdn" -X HEAD; }
